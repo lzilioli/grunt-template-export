@@ -93,7 +93,8 @@ you'd get the following output:
 #### options.sourceDir
 
 // TODO: make `sourceDir` optional
-Directly in which to apply the globbing patterns passed in options.source.
+
+Directory in which to apply the globbing patterns passed in options.source.
 
 #### options.source
 
