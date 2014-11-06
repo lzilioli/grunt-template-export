@@ -1,6 +1,6 @@
 module.exports = {
 	js: {
 		files: [ '<%= vars.paths.js %>' ],
-		tasks: [ 'jsbeautifier', 'jshint' ]
+		tasks: [ 'js_on_watch' ]
 	}
 };

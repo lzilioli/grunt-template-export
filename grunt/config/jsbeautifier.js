@@ -1,5 +1,5 @@
 module.exports = function() {
-	var jsHintOpts = {
+	var jsBeautifierOpts = {
 		'indentWithTabs': true,
 		'preserveNewlines': true,
 		//'max_preserve_newlines': 4,
@@ -19,14 +19,14 @@ module.exports = function() {
 		main: {
 			src: [ '<%= vars.paths.js %>' ],
 			options: {
-				js: jsHintOpts
+				js: jsBeautifierOpts
 			}
 		},
 		lint: {
 			src: [ '<%= vars.paths.js %>' ],
 			options: {
 				mode: 'VERIFY_ONLY',
-				js: jsHintOpts
+				js: jsBeautifierOpts
 			}
 		}
 	};

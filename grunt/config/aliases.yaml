@@ -1,3 +1,7 @@
+js_on_watch:
+- 'jsbeautifier'
+- 'jshint'
+
 default:
 - 'clean'
 - 'watch'
