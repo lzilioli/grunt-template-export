@@ -1,4 +1,0 @@
-{
-	"name": "exporter",
-	"main": "./lib/exporter.js"
-}
