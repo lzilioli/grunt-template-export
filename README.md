@@ -29,7 +29,7 @@ var exporter = require( 'exporter' )( handlebars )( {
 	translator: (function(handlebars){
 		translate: function( templateContents, translateOpts, model ) {
 			// inspect translate options here
-			handlebars.registerPartial('staticTitle', translateOpts.staticTitle || '');
+			handlebars.registerPartial('staticTitle', translateOpts.staticTitle || 'My Website');
 			var template = handlebars.compile( templateContents );
 			return template( model );
 		}
@@ -60,7 +60,7 @@ If you ran the code above with the following file present,
 <html>
 <head>
 	<meta charset=utf-8 />
-	<title>{{staticTitle}}</title>
+	<title>{{> staticTitle }}</title>
 </head>
 <body class="{{ bodyClass }}">
 
