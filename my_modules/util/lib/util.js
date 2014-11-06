@@ -88,5 +88,21 @@ module.exports = ( function() {
 		return matches;
 	};
 
-	return file;
+	file.read = function( toRead ) {
+		if ( !toRead ) {
+			return '';
+		}
+
+		if ( !fs.existsSync( toRead ) ) {
+			console.log( 'file does not exist:', toRead );
+			return '';
+		} else {
+			var contents = fs.readFileSync( toRead ).toString();
+			return contents;
+		}
+	};
+
+	return {
+		file: file
+	};
 }() );

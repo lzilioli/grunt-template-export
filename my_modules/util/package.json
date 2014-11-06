@@ -1,0 +1,4 @@
+{
+	"name": "util",
+	"main": "./lib/util.js"
+}
