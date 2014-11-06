@@ -36,7 +36,7 @@ var toCompiledMustache = exporter( {
 	translator: global.req( 'mustacheCompileTranslator' ),
 	uiPath: 'build/mustache',
 	source: [ '**/*.tmpl' ],
-	dest: 'build/mstParsed/'
+	dest: 'build/mstParsed/' // TODO: directory is resolved incorrectly if pass build/mustacheCompiled (puts in Compiled dir)
 } );
 
 toCompiledMustache.exportify();

@@ -2,6 +2,9 @@ js_on_watch:
 - 'jsbeautifier'
 - 'jshint'
 
+pre-push:
+- 'jshint'
+
 default:
 - 'clean'
 - 'watch'
