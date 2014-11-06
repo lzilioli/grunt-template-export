@@ -52,7 +52,7 @@ exporter.exportify( {
 
 ### Example
 
-If you ran the code below with the following file present,
+If you ran the code above with the following file present,
 
 #### templates/index.tmpl
 ```html
@@ -140,7 +140,7 @@ The file in which write the exported contents. Will be relative to the above `op
 
 #### exportify.options.translateOpts
 
-Gets passed to `translator.translate()`
+Gets passed to `translator.translate()`.
 
 #### exportify.options.modelOpts
 
