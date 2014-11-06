@@ -15,9 +15,15 @@ module.exports = function( handlebars ) {
 			return '{{ ' + value + ' }}';
 		},
 		pc: function( templateName ) {
-			var template = handlebars.compile( handlebars.partials[ templateName ] );
-			var renderedContent = template();
-			return renderedContent;
+			try {
+				var template = handlebars.compile( handlebars.partials[ templateName ] );
+				var renderedContent = template();
+				return renderedContent;
+			} catch ( exception ) {
+				console.log( 'Error with partial: ' + templateName );
+				console.log( exception.message );
+				process.exit( 1 );
+			}
 		},
 		ifequals: function( value ) {
 			stacks.ifStack.push( value );

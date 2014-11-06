@@ -32,7 +32,14 @@ module.exports = function( appConfig ) {
 				// Create the destination dir if it doesn't exist
 				mkpath.sync( path.dirname( dest ) );
 				// Pass the file through the translator
-				var translated = appConfig.translator.translate( util.file.read( sourcePath ), view );
+				var translated;
+				try {
+					translated = appConfig.translator.translate( util.file.read( sourcePath ), view );
+				} catch ( exception ) {
+					console.log( 'Error translating file: ' + sourcePath );
+					console.log( exception.message );
+					process.exit( 1 );
+				}
 				// Write the translated file to its destination
 				fs.writeFileSync( path.join( process.cwd(), dest ), translated );
 			} );
