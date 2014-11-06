@@ -1,5 +1,6 @@
 {
   "name": "exporter",
+  "version": "0.0.0",
   "main": "./lib/exporter.js",
   "dependencies": {
     "glob": "~4.0.6",
