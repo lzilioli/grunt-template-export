@@ -3,7 +3,7 @@ module.exports = {
 		js: [
 			'*.js',
 			'grunt/**/*.js',
-			'my_modules/**/*.js',
+			'lib/**/*.js',
 		]
 	}
 };
