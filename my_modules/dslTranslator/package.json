@@ -1,0 +1,4 @@
+{
+	"name": "dslTranslator",
+	"main": "./lib/dslTranslator.js"
+}

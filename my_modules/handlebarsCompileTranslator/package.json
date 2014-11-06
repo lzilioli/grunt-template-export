@@ -1,0 +1,4 @@
+{
+	"name": "handlebarsCompileTranslator",
+	"main": "./lib/handlebarsCompileTranslator.js"
+}

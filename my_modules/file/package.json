@@ -1,0 +1,4 @@
+{
+	"name": "file",
+	"main": "./lib/file.js"
+}

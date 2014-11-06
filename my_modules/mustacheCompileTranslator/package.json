@@ -1,0 +1,4 @@
+{
+	"name": "mustacheCompileTranslator",
+	"main": "./lib/mustacheCompileTranslator.js"
+}
