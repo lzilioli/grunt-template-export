@@ -6,5 +6,4 @@ pre-push:
 - 'jshint'
 
 default:
-- 'clean'
 - 'watch'
