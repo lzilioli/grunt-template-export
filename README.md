@@ -3,6 +3,10 @@ node-template-expander
 
 Piece together files from a template directory.
 
+## Note
+
+This is still very much a work in progress. It's not documented well, and I haven't decided on APIs and overall functionality. There's not much to see here at this point.
+
 ## Usage
 
 ```bash
