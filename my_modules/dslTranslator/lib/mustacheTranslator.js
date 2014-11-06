@@ -1,7 +1,6 @@
 var path = require( 'path' );
-var helperFns = global.req( 'helpers' );
 
-module.exports = function( handlebars, sourceRoot ) {
+module.exports = function( handlebars ) {
 
 	var stacks = {
 		ifStack: [],
@@ -16,8 +15,7 @@ module.exports = function( handlebars, sourceRoot ) {
 			return '{{ ' + value + ' }}';
 		},
 		pc: function( templateName ) {
-			var templateContents = helperFns.getTemplateContents( path.join( sourceRoot, templateName ) + '.tmpl' );
-			var template = handlebars.compile( templateContents );
+			var template = handlebars.compile( handlebars.partials[ templateName ] );
 			var renderedContent = template();
 			return renderedContent;
 		},

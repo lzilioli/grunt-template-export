@@ -15,9 +15,8 @@ var toRmnPhp = exporter( {
 toRmnPhp.exportify();
 
 var toMustache = exporter( {
-	// TODO: having to pass RMN as source root all the way down to mustacheTranslator is a shitty pattern
-	translator: global.req( 'dslTranslator' )( 'mustacheTranslator', 'RMN' ),
-	sourceDir: 'RMN/',
+	translator: global.req( 'dslTranslator' )( 'mustacheTranslator' ),
+	sourceDir: 'RMN',
 	source: [ '**/*.tmpl' ],
 	dest: 'build/mustache/'
 } );

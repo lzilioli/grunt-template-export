@@ -9,20 +9,16 @@ module.exports = function( appConfig ) {
 
 	// TODO: ensure that appConfig.sourceDir exists
 
-	// Get a list of partial templates defined in the ui directory (filename begins with _)
-	var templates = util.file.expand( path.normalize( path.join( appConfig.sourceDir ) + '/**/_*.tmpl' ) );
+	var sourceFiles = listSourceFiles();
 
-	// Register the partials
-	_.each( templates, function( name ) {
-		// Read in the partial
-		var partial = util.file.read( name );
+	// Get a list of sourceFiles that are considered partials
+	var partialTemplates = _.filter( sourceFiles, isPartial );
 
-		// Get the name of the partial for handlebars
-		// (by removing starting _ and extension)
-		var partialName = name.replace( appConfig.sourceDir + '/', '' ).replace( '.tmpl', '' );
-
-		// Register the partial with handlebars
-		handlebars.registerPartial( partialName, partial );
+	// Register each partial with handlebars
+	_.each( partialTemplates, function( filePath ) {
+		var partialName = getPartialName( filePath );
+		var partialContents = util.file.read( filePath );
+		handlebars.registerPartial( partialName, partialContents );
 	} );
 
 	/***************************************************************************
@@ -30,12 +26,6 @@ module.exports = function( appConfig ) {
 	 **************************************************************************/
 	return {
 		exportify: function( view ) {
-			// For each item in appConfig.sources, prepend appConfig.sourceDir
-			// so that the pattern refers to an existing path.
-			var sourceFiles = _.map( appConfig.source, realPath );
-			// Pass the resulting array to util.file.expand to get a list of files
-			sourceFiles = util.file.expand( sourceFiles );
-
 			_.each( sourceFiles, function( sourcePath ) {
 				var pathFromSrc = getPathFromSourceDir( sourcePath );
 				var dest = path.join( appConfig.dest, pathFromSrc );
@@ -52,6 +42,15 @@ module.exports = function( appConfig ) {
 	/***************************************************************************
 	 ********************************    HELPERS    ****************************
 	 **************************************************************************/
+	function listSourceFiles() {
+		// For each item in appConfig.sources, prepend appConfig.sourceDir
+		// so that the pattern refers to an existing path.
+		var retVal = _.map( appConfig.source, realPath );
+		// Pass the resulting array to util.file.expand to get a list of files
+		retVal = util.file.expand( retVal );
+		return retVal;
+	}
+
 	function realPath( to ) {
 		return path.join( appConfig.sourceDir, to );
 	}
@@ -62,5 +61,15 @@ module.exports = function( appConfig ) {
 			sourceDir = sourceDir + '/';
 		}
 		return to.substr( sourceDir.length );
+	}
+
+	// Something is considered a partial if the filename begins with `_`
+	function isPartial( filePath ) {
+		return path.basename( filePath )[ 0 ] === '_';
+	}
+
+	// The relative path of the partial from sourceDir, without the .tmpl extension
+	function getPartialName( filePath ) {
+		return getPathFromSourceDir( filePath ).replace( '.tmpl', '' );
 	}
 };
