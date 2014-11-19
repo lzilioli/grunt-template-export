@@ -62,7 +62,7 @@ module.exports = function( grunt ) {
 				} )[ 0 ];
 			}
 
-			var model = theModel.getModel( opts, templatePath, templateContents );
+			var model = theModel.getModel( opts, templatePath, templateContents, theTemplates );
 			var translatedContents = theTranslator.translate( templateContents, model, opts, templatePath );
 			grunt.file.mkdir( path.dirname( file.dest ) );
 			grunt.file.write( file.dest, translatedContents );

@@ -32,7 +32,7 @@ grunt.initConfig({
 			 * 	( translator, model, templates )
 			 */
 			model: { // default model implementation
-				getModel: function( opts, templatePath, templateContents ) {
+				getModel: function( opts, templatePath, templateContents, theTemplates ) {
 					return { };
 				}
 			},
@@ -166,7 +166,7 @@ Object that specifies a list of files. All destinations are ignored. This is exp
 
 ##### options.model.getModel
 
-	function( opts, templatePath, templateContents )
+	function( opts, templatePath, templateContents, theTemplates )
 
 - return
 -- Object
@@ -176,3 +176,7 @@ Object that specifies a list of files. All destinations are ignored. This is exp
 -- the path to the source template containing templateContents
 - templateContents
 -- the contents of the template being translated
+- theTemplates
+-- list of template files as passed to options.templates
+
+TODO: Rename options.templates and theTemplates variable to something else. This will not necessarily contain templates, as someone could use it to generate a blog and build a model out of markdown files with yaml-front matter.
