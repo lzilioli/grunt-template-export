@@ -76,6 +76,19 @@ grunt.initConfig({
 					}
 				} )
 			}
+		},
+		// Render all of your templates out to .html, using a static model
+		all: {
+			expand: true,
+			cwd: 'templates',
+			src: [ '**/*.tmpl' ],
+			dest: 'build/tmpl',
+			options: {
+				translator: require( 'grunt-template-expander' ).translators.handlebars(),
+				model: {
+					getModel: function(){ grunt.file.readJSON( 'model.json' ) }
+				}
+			}
 		}
 	}
 });
