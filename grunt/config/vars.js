@@ -3,6 +3,7 @@ module.exports = {
 		js: [
 			'*.js',
 			'grunt/**/*.js',
+			'tasks/**/*.js',
 			'lib/**/*.js',
 		]
 	}

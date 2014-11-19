@@ -1,151 +1,165 @@
-node-template-expander
-======================
+grunt-template-export
+=====================
 
-Piece together files from a template directory.
+A grunt multi-task designed to streamline the process of exporting templates out of one directory into another. Provides a way to optionally build a model dynamically for each template being exported, and pass that model, along with the template being exported through a translation step.
 
 ## Note
 
-This is still very much a work in progress. It's not documented well, and I haven't decided on APIs and overall functionality. There's not much to see here at this point.
+This is still a work in progress.
 
 ## Usage
 
 ```bash
-npm install --save-dev git+http://git@github.com/lzilioli/node-template-exporter.git
+npm install --save git+http://git@github.com/lzilioli/node-template-exporter.git
 ```
+
+```JavaScript
+grunt.initConfig({
+	template-export: {
+		options: {
+			templates: {
+				// The arguments passed to options.templates will be
+				// interpreted the same way as you are able to
+				// specify files for a grunt task.
+				// Once a list of template files is determined based
+				// on the templates argument, it will be passed to
+				// translator.init as theTemplates argument
+				src: [ 'templates/**/*.tmpl' ]
+			},
+			/* NOTE: The opts argument passed to model.getModel,
+			 * translator.init, and translator.translate will contain
+			 * all of the options passed in except the keys
+			 * 	( translator, model, templates )
+			 */
+			model: { // default model implementation
+				getModel: function( opts, templatePath, templateContents ) {
+					return { };
+				}
+			},
+			translator: { // default translator implementation
+				init: function( theTemplates, opts )
+					return;
+				},
+				translate: function( templateContents, model, opts, templatePath ) {
+					return templateContents;
+				}
+			}
+		},
+		/* Export the homepage, as html */
+		homepage: {
+			src: [ 'src/templates/index.tmpl' ],
+			dest: [ 'export/blog/index.html' ],
+			options: {
+				/* A default handlebars translator is provided. This
+				 * translator will automatically register all of the
+				 * templates specified in options.templates
+				 * that pass the isPartial test with handlebars with the
+				 * name returned by getPartialName. The default implementation
+				 * of those functions is shown below, but you may override
+				 * them as you wish. If you don't pass either, the defaults
+				 * will be used.
+				 *
+				 * During translation, your template will be run through
+				 * handlebars with the designated partials registered.
+				 *
+				 * See the below "Extending the Default Translator" section
+				 * to inherit some of the default handlebars translator's
+				 * functionality */
+				translator: require('grunt-template-export').translators.handlebars({
+					getPartialName: function( partialPath ) {
+						// The relative path of the partial from sourceDir, without the .tmpl extension
+						return partialPath.replace( '.tmpl', '' );
+					},
+					// Something is considered a partial if the filename begins with `_`
+					isPartial: function( filePath ) {
+						return path.basename( filePath )[ 0 ] === '_';
+					}
+				} )
+			}
+		}
+	}
+});
+```
+
+### Extending the Default Translator
+
+Say you want to register a set of helper functions with handlebars to make available during the export step. You can define the following translator, and pass it in the options to template-export.
 
 ```javascript
-var handlebars = require( handlebars );
-var exporter = require( 'exporter' )( handlebars )( {
-	sourceDir: 'templates',
-	source: [ '**/*.tmpl' ],
-	dest: 'www',
-	view: {
-		getView: function(modelOpts, model) {
-			// presumably the view would fetch data here based on modelOpts,
-			// combine it with model, and return the result for the templates
-			return model;
+var _ = require( 'underscore' );
+var handlebars = require( 'handlebars' );
+
+module.exports = function( translatorToUse, helperOverrides ) {
+
+	var __parent = require( 'grunt-template-export' ).translators.handlebars.apply( this, [ helperOverrides || {} ] );
+
+	return {
+		init: function() {
+			// Load the translator and register its helpers
+			var helpers = {
+				siteUrl: function( siteDest ) {
+					return 'http://www.example.com/' + siteDest
+				}
+			};
+
+			_.each( helpers, function( value, key ) {
+				handlebars.registerHelper( key, value );
+			} );
+
+			__parent.init.apply( this, arguments );
+		},
+		translate: function() {
+			return __parent.translate.apply( this, arguments );
 		}
-	},
-	translator: (function(handlebars){
-		translate: function( templateContents, translateOpts, model ) {
-			// inspect translate options here
-			handlebars.registerPartial('staticTitle', translateOpts.staticTitle || 'My Website');
-			var template = handlebars.compile( templateContents );
-			return template( model );
-		}
-	} ( handlebars ) )
-} );
-exporter.exportify( {
-	source: 'index.tmpl',
-	dest: 'index.html',
-	translateOpts: {
-		staticTitle: 'Portfolio'
-	},
-	modelOpts: {
-		featuredTag: 'portfolio'
-	},
-	model: {
-		bodyClass: 'home'
-	}
-} );
+	};
+};
 ```
-
-### Example
-
-If you ran the code above with the following file present,
-
-#### templates/index.tmpl
-```html
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset=utf-8 />
-	<title>{{> staticTitle }}</title>
-</head>
-<body class="{{ bodyClass }}">
-
-</body>
-</html>
-```
-
-you'd get the following output:
-
-#### www/index.html
-```html
-<!DOCTYPE html>
-<html>
-<head>
-	<meta charset=utf-8 />
-	<title>Portfolio</title>
-</head>
-<body class="home">
-
-</body>
-</html>
-```
-
-(note that this example ignores the featuredTag value, however this could be used by `view.getView()` to only return blog items that match the given tag).
 
 ### Options
 
-// TODO: Document all optional options
+#### options.templates
 
-#### options.sourceDir
-
-// TODO: make `sourceDir` optional
-
-Directory in which to apply the globbing patterns passed in options.source.
-
-#### options.source
-
-Globbing pattern to select files within sourceDir to consider in the export operation.
-
-#### options.dest (optional)
-
-// TODO: This may not work if dest is omitted and no options are passed to `exportify()`
-
-Directory in which to put all of the exported files. If omitted, the files will be placed relative to the current directory.
+Object that specifies a list of files. All destinations are ignored. This is expanded in the same way that files specified for a grunt task are expanded.
 
 #### options.translator
 
-Must expose a translate function that accepts 3 arguments:
+##### options.translator.init
 
+	function( theTemplates, opts )
+
+- return
+-- none
+- theTemplates
+-- list of template files as passed to options.templates
+- opts
+-- all options passed to the task except ( translator, model, templates )
+
+##### options.translator.translate
+
+	function( templateContents, model, opts, templatePath )
+
+- return
+-- string
 - templateContents
 -- the contents of the template being translated
-- translateOpts
--- passed from the call to `exportify()`. These can be inspected to register on-the-fly behavior for that particular translation.
 - model
--- The model as returned by `options.view.getView()`
+-- the model as returned by `options.model.getModel()`
+- opts
+-- all options passed to the task except ( translator, model, templates )
+- templatePath
+-- the path to the source template containing templateContents
 
-#### options.view
+#### options.model
 
-Object that exposes a `getView()` function that accepts 2 arguments:
+##### options.model.getModel
 
-- modelOpts
--- Passed from exportify options.modelOpts. Use these to tell your view how to render for the given export action.
-- model
--- Passed from exportify options.model. Its likely you'll want to pass some stuff from the exportify call directly into the model. Use this object for that. It is the responsibility of getView to return a model containing these values, if your templates expect them to be there.
+	function( opts, templatePath, templateContents )
 
-### Exportify Options
-
-The argument to exportify is optional. If omitted, every file in `options.sourceDir` whose name matches the globbing pattern passed in `options.source` will be run through the translator.
-
-#### exportify.options.source
-
-Template to build out into options.dest.
-
-#### exportify.options.dest
-
-The file in which write the exported contents. Will be relative to the above `options.dest`, if specified.
-
-#### exportify.options.translateOpts
-
-Gets passed to `translator.translate()`.
-
-#### exportify.options.modelOpts
-
-Gets passed to `view.getView()`.
-
-#### exportify.options.model
-
-Gets passed to `view.getView()`.
+- return
+-- Object
+- opts
+-- all options passed to the task except ( translator, model, templates )
+- templatePath
+-- the path to the source template containing templateContents
+- templateContents
+-- the contents of the template being translated

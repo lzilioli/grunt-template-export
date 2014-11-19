@@ -1,10 +1,9 @@
 {
-  "name": "exporter",
+  "name": "grunt-template-export",
   "version": "0.0.0",
-  "main": "./lib/exporter.js",
+  "main": "./lib/grunt-template-export.js",
   "dependencies": {
     "glob": "~4.0.6",
-    "lz-node-utils": "git+http://git@github.com/lzilioli/lz-node-utils.git",
     "mkpath": "~0.1.0",
     "underscore": "^1.6.0"
   },
