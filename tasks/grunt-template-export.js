@@ -26,7 +26,7 @@ module.exports = function( grunt ) {
 
 		// allow each value in options.sourceFiles to be specified in any of the
 		// ways that files can be passed to grunt tasks
-		// will always result in keyInSourceFiles: [flat,list,of,files]
+		// should always result in keyInSourceFiles: [flat,list,of,files]
 		var sourceFiles = _.chain( opts.sourceFiles )
 			.map( function( fileArgs, name ) {
 				var ret = {};
