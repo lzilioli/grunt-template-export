@@ -5,12 +5,14 @@ module.exports = function( grunt ) {
 
 	grunt.registerMultiTask( 'template-export', function() {
 
+		var taskTarget = this.target;
 		var opts = this.options();
 
 		// Defaults (TODO: I couldn't figure out how to get grunt to do a deep
 		// extend with defaults passed to this.options(), so for now, ugly code.)
 		var modelNoop = require( '../lib/model-noop' );
 		opts.model = opts.model || modelNoop;
+		opts.model.init = opts.model.init || modelNoop.init;
 		opts.model.getModel = opts.model.getModel || modelNoop.getModel;
 		var theModel = opts.model;
 		delete opts.model;
@@ -22,19 +24,29 @@ module.exports = function( grunt ) {
 		var theTranslator = opts.translator;
 		delete opts.translator;
 
-		// allow options.templates to be specified in any of the ways that files
-		// can be passed to grunt tasks
-		var theTemplates = _.chain( grunt.task.normalizeMultiTaskFiles( opts.templates ) )
-			// pick all of the src out of the resulting files array
-			.pluck( 'src' )
-			// and flatten them down to a list of strings
-			.flatten()
-			// this is the list of templates that we will pass to the translator's init function
+		// allow each value in options.sourceFiles to be specified in any of the
+		// ways that files can be passed to grunt tasks
+		// will always result in keyInSourceFiles: [flat,list,of,files]
+		var sourceFiles = _.chain( opts.sourceFiles )
+			.map( function( fileArgs, name ) {
+				var ret = {};
+				ret[ name ] = _.chain( grunt.task.normalizeMultiTaskFiles( fileArgs ) )
+					.pluck( 'src' )
+					.flatten()
+					.value();
+				return ret;
+			} )
+			.reduce( function( memo, initialValue ) {
+				var key = _.keys( initialValue )[ 0 ];
+				memo[ key ] = initialValue[ key ];
+				return memo;
+			}, {} )
 			.value();
 
-		delete opts.templates;
+		delete opts.sourceFiles;
 
-		theTranslator.init( theTemplates, opts );
+		theTranslator.init( sourceFiles, opts );
+		theModel.init( sourceFiles, opts );
 
 		this.files.forEach( function( file ) {
 			if ( file.src && file.src.length > 1 ) {
@@ -61,12 +73,24 @@ module.exports = function( grunt ) {
 					return grunt.file.read( filepath );
 				} )[ 0 ];
 			}
-
-			var model = theModel.getModel( opts, templatePath, templateContents, theTemplates );
-			var translatedContents = theTranslator.translate( templateContents, model, opts, templatePath );
-			grunt.file.mkdir( path.dirname( file.dest ) );
-			grunt.file.write( file.dest, translatedContents );
-			grunt.log.writeln( 'File "' + file.dest + '" created.' );
+			try {
+				var model = theModel.getModel( opts, templatePath, templateContents );
+				var translatedContents = theTranslator.translate( templateContents, model, opts, templatePath );
+				grunt.file.mkdir( path.dirname( file.dest ) );
+				grunt.file.write( file.dest, translatedContents );
+				grunt.log.writeln( 'File "' + file.dest + '" created.' );
+			} catch ( exception ) {
+				throw new Error( [
+					'Unhandeled exception during translation of:',
+					taskTarget,
+					'using template:',
+					templatePath,
+					'with contents:',
+					templateContents,
+					'error:',
+					exception.message
+				].join( ' ' ) );
+			}
 		} );
 	} );
 };
