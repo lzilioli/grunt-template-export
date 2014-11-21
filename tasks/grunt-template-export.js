@@ -85,8 +85,6 @@ module.exports = function( grunt ) {
 					taskTarget,
 					'using template:',
 					templatePath,
-					'with contents:',
-					templateContents,
 					'error:',
 					exception.message
 				].join( ' ' ) );
