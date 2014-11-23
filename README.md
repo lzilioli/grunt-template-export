@@ -18,13 +18,12 @@ The magic is in the fact that the model fetching and translation are both handel
 ## Usage
 
 ```bash
-npm install --save git+http://git@github.com/lzilioli/node-template-exporter.git
+npm install --save git+http://git@github.com/lzilioli/grunt-template-export.git
 ```
 
 ## Configuring The Task
 
-```JavaScript
-
+```javascript
 var handlebars = require( 'handlebars' );
 
 grunt.initConfig({
@@ -124,7 +123,7 @@ grunt.initConfig({
 			src: [ '**/*.tmpl' ],
 			dest: 'build/static',
 			options: {
-				translator: require( 'grunt-template-expander' ).translators.handlebars(handlebars),
+				translator: require( 'template-expander' ).translators.handlebars(handlebars),
 				model: {
 					getModel: function(){ grunt.file.readJSON( 'model.json' ) }
 				}
@@ -204,38 +203,3 @@ grunt.initConfig({
 -- the contents of the template being translated
 - theTemplates
 -- list of template files as passed to `options.templates`
-
-### Extending the Default Translator
-
-Say you want to register a set of helper functions with handlebars to make available during the export step. You can define the following translator, and pass it in the options to template-export.
-
-```javascript
-var _ = require( 'underscore' );
-var handlebars = require( 'handlebars' );
-var defaultTranslators = require( 'grunt-template-export' ).translators;
-
-module.exports = function( translatorToUse, helperOverrides ) {
-
-	var __parent = defaultTranslators.handlebars(handlebars, helperOverrides);
-
-	return {
-		init: function() {
-			// Load the translator and register its helpers
-			var helpers = {
-				siteUrl: function( siteDest ) {
-					return 'http://www.example.com/' + siteDest
-				}
-			};
-
-			_.each( helpers, function( value, key ) {
-				handlebars.registerHelper( key, value );
-			} );
-
-			__parent.init.apply( this, arguments );
-		},
-		translate: function() {
-			return __parent.translate.apply( this, arguments );
-		}
-	};
-};
-```
