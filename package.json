@@ -1,10 +1,10 @@
 {
   "name": "grunt-template-export",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Luke Zilioli <elzee08@gmail.com> (http://lukezilioli.com/)",
   "dependencies": {
     "underscore": "^1.6.0",
-    "template-export": "lzilioli/template-export#v0.1.0"
+    "template-export": "lzilioli/template-export#v0.1.1"
   },
   "devDependencies": {
     "grunt": "~0.4.5",

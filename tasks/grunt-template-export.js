@@ -17,21 +17,18 @@ module.exports = function( grunt ) {
 			}
 
 			var templatePath;
-			var templateContents;
 
 			if ( file.src ) {
-				templateContents = file.src.filter( function( filepath ) {
+				file.src.filter( function( filepath ) {
 					// Remove nonexistent files (it's up to you to filter or warn here).
 					if ( !grunt.file.exists( filepath ) ) {
 						grunt.log.fail( 'Source file "' + filepath + '" not found.' );
 						return false;
 					} else {
+						templatePath = filepath;
 						return true;
 					}
-				} ).map( function( filepath ) {
-					templatePath = filepath;
-					return grunt.file.read( filepath );
-				} )[ 0 ];
+				} );
 			}
 			try {
 				var translatedContents = exporter( templatePath );
@@ -39,13 +36,12 @@ module.exports = function( grunt ) {
 				grunt.file.write( file.dest, translatedContents );
 				grunt.log.writeln( 'File "' + file.dest + '" created.' );
 			} catch ( exception ) {
+				console.log( exception.stack );
 				throw new Error( [
 					'Unhandeled exception during translation of:',
 					taskTarget,
 					'using template:',
-					templatePath,
-					'error:',
-					exception.message
+					templatePath
 				].join( ' ' ) );
 			}
 		} );
