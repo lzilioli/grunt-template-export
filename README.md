@@ -34,25 +34,9 @@ grunt.initConfig({
        * reserved keys (explained below):
        *  [ sourceFiles | translator | model ] */
       sourceFiles: {
-        /* This should be an object containing key/value
-         * pairs, where each value specifies a set of files
-         * associated with the given key.
-         *
-         * Each set of values will be expanded into a flat list
-         * of source files. You can specify the source files
-         * the same way you would specify files to a grunt
-         * read-only task.
-         *
-         * The resulting object will then be passed to
-         * model.init and translator.init. Those functions
-         * may do with the object what they please.
-         *
-         * This might be used to pass a list of markdown files
-         * to your model, and a set of templates to your
-         * translator for proper rendering. It's all up
-         * to you. */
-        templates: { src: [ 'templates/**/*.tmpl' ] },
-        posts: { src: [ 'blog/posts/**/*.md' ] }
+        /* Arg for [lz-node-utils.file.expandSourceFiles](http://github.com/lzilioli-lz-node-utils) */
+        templates: [ 'templates/**/*.tmpl' ],
+        posts: [ 'blog/posts/**/*.md' ]
       },
       /* Below are the default implementations for a model and a
        * translator. If you don't provide either in the task options,
