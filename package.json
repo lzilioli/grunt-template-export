@@ -1,6 +1,6 @@
 {
   "name": "grunt-template-export",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "author": "Luke Zilioli <elzee08@gmail.com> (http://lukezilioli.com/)",
   "dependencies": {
     "underscore": "^1.6.0",
