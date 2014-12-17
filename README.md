@@ -17,7 +17,7 @@ The magic is in the fact that the model fetching and translation are both handel
 ## Usage
 
 ```bash
-npm install --save lzilioli/grunt-template-export
+npm install --save grunt-template-export
 ```
 
 ## Configuring The Task
